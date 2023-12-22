@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* eslint-disable max-len */
 /* eslint-disable no-inner-declarations */
 // Imported crypto for random IDs
@@ -90,7 +89,7 @@ router.patch('/task/:task_id', (req, res) => {
     const keys = Object.keys(req.body);
     const oldTasks = tasks.find((task) => task.task_id === req.params.task_id);
     keys.forEach((key) => oldTasks[key] = req.body[key]);
-    tasks = tasks.map((task) => (task.task_id === parseInt(req.params.task_id) ? oldTasks : task));
+    tasks = tasks.map((task) => (task.task_id === parseInt(req.params.task_id, 10) ? oldTasks : task));
     res.status(201).send(tasks);
   } else {
     res.status(401).send('You have to login to access this service');

@@ -44,62 +44,74 @@ router.get('/task/:task_id', (req, res) => {
         }else{
             res.status(200).send(tasks.find((task) => task.task_id === req.params.task_id))
         }
+    }else{
+        res.status(409).send("You have to login to access this service")
     }
     
 })
 
 router.post('/tasks', (req, res) => {
     //#swagger.tags = ['Tasks']
-   
-    const newTask = req.body;
-    newTask['created_at'] = new Date().toISOString();
-    newTask['done_at'] = ''
-    newTask['task_id'] = randomUUID();
+   if(req.session.email){
+        const newTask = req.body;
+        newTask['created_at'] = new Date().toISOString();
+        newTask['done_at'] = ''
+        newTask['task_id'] = randomUUID();
 
-    if(newTask.name){
-        tasks = [...tasks, newTask];
-        res.status(201).send(tasks);
-    }else{
-        res.status(400).send("Please enter the name of the task!")
-    }
+        if(newTask.name){
+            tasks = [...tasks, newTask];
+            res.status(201).send(tasks);
+        }else{
+            res.status(400).send("Please enter the name of the task!")
+        }
+   }else{
+    res.status(409).send("You have to login to access this service")
+}
+    
 
     
 });
 
 router.patch('/task/:task_id', (req, res) => {
     //#swagger.tags = ['Lends']
-    const keys = Object.keys(req.body);
-    const oldTasks = tasks.find(task => task.task_id === req.params.task_id);
-    keys.forEach(key => oldTasks[key] = req.body[key]);
-    tasks = tasks.map(task => task.task_id === parseInt(req.params.task_id) ? oldTasks : task);
-    res.status(201).send(tasks);
-    
+    if(req.session.email){
+        const keys = Object.keys(req.body);
+        const oldTasks = tasks.find(task => task.task_id === req.params.task_id);
+        keys.forEach(key => oldTasks[key] = req.body[key]);
+        tasks = tasks.map(task => task.task_id === parseInt(req.params.task_id) ? oldTasks : task);
+        res.status(201).send(tasks);
+    }else{
+        res.status(409).send("You have to login to access this service")
+    }
 })
 
 router.delete('/task/:task_id', (req, res) => {
     //#swagger.tags = ['Lends']
-    function doWeHaveTask(){
-        countsifthere = 0;
-        tasks.forEach((task) => {
-            if (task.task_id == req.params.task_id){
-                countsifthere = countsifthere + 1;
+    if(req.session.email){
+        function doWeHaveTask(){
+            countsifthere = 0;
+            tasks.forEach((task) => {
+                if (task.task_id == req.params.task_id){
+                    countsifthere = countsifthere + 1;
+                }
+            })
+        
+            if(countsifthere != 0){
+                return false;
+            }else{
+                return true;
             }
-        })
-    
-        if(countsifthere != 0){
-            return false;
-        }else{
-            return true;
         }
-    }
-
-    if(doWeHaveTask()){
-        res.status(404).send("There is no task with the given id, please try again with another task_id")
-    }else{
-        tasks = tasks.filter(task => task.task_id !== req.params.task_id)
-        res.status(200).send(tasks)
-    }
     
+        if(doWeHaveTask()){
+            res.status(404).send("There is no task with the given id, please try again with another task_id")
+        }else{
+            tasks = tasks.filter(task => task.task_id !== req.params.task_id)
+            res.status(200).send(tasks)
+        }
+    }else{
+        res.status(409).send("You have to login to access this service")
+    }
 })
 
 module.exports = router

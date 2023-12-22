@@ -51,15 +51,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "created_at": {
-                  "example": "any"
-                },
-                "done_at": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                },
                 "name": {
                   "example": "any"
                 }

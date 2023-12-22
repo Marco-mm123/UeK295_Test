@@ -9,9 +9,9 @@ const router = require('./tasks');
 const app = express();
 const port = 3000;
 
-// const swaggerUi = require('swagger-ui-express');
-// const swaggerDocument = require('./swagger-output.json');
-// app.use('/swagger-ui/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+app.use('/swagger-ui/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(session({
   secret: 'supersecret',
@@ -26,10 +26,14 @@ app.use(express.json());
 app.use(router);
 app.use(autrouter);
 
-/* app.get("/swagger-ui", (request, response) => {
+app.get('/', (req, res) => {
+    res.status(200).send("Welcome to the mainpage of this Backend API");
+});
+
+app.get("/swagger-ui", (request, response) => {
   //#swagger.tags = ['swagger-ui']
   response.sendFile(__dirname + "/swagger-output.json");
-}); */
+});
 
 // This just say the server on which port it should listen.
 app.listen(port, () => {

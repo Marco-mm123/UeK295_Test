@@ -62,6 +62,7 @@ router.get('/task/:task_id', (req, res) => {
 });
 
 // By using post a new task can be added. The date, ID and the done_at are get added so The programm only has to check if user gave a name.
+
 router.post('/tasks', (req, res) => {
   // #swagger.tags = ['Tasks']
   if (req.session.email) {
@@ -81,7 +82,8 @@ router.post('/tasks', (req, res) => {
   }
 });
 
-// This code is form the inputs. it gets all the changes out of the request-body and changes only the new things.
+// This code is form the a combination of both the several inputs and my old code from the booksstore.
+// It gets all the changes out of the request-body and changes only the new things.
 router.patch('/task/:task_id', (req, res) => {
   // #swagger.tags = ['Tasks']
   if (req.session.email) {

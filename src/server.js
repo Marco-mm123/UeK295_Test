@@ -1,3 +1,4 @@
+//Imports the other files and all the other needed packets
 const express = require('express');
 const session = require('express-session');
 const autrouter = require('./aut');
@@ -18,6 +19,7 @@ app.use(session({
 
 app.use(express.json());
 
+//With these lines you the imported files can be used whenever one of their requests are called.
 app.use(router);
 app.use(autrouter);
 
@@ -26,6 +28,7 @@ app.use(autrouter);
   response.sendFile(__dirname + "/swagger-output.json");
 });*/
 
+//This just say the server on which port it should listen.
 app.listen(port, () => {
   console.log(`To-Do list app listening on port ${port}`);
 });

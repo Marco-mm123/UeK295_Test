@@ -2,6 +2,8 @@ const { randomUUID } = require('node:crypto');
 const express = require('express')
 const router = express.Router()
 
+const autrouter = require('./aut');
+
 let tasks = [
     {task_id: "1", name: "cook dinner", created_at: "2023-12-22T07:43:17.758Z", done_at: ""},
     {task_id: "2", name: "clean floor", created_at: "2023-12-22T07:43:17.758Z", done_at: ""},
@@ -11,30 +13,37 @@ let tasks = [
 
 router.get('/tasks', (req, res) => {
     //#swagger.tags = ['Tasks']
-    res.status(200).send(tasks);
+    if(req.session.email){
+        res.status(200).send(tasks);
+    }else{
+        res.status(409).send("You have to login to access this service")
+    }
+    
 });
 
 router.get('/task/:task_id', (req, res) => {
     //#swagger.tags = ['Tasks']
-    function doWeHaveTask(){
-        countsifthere = 0;
-        tasks.forEach((task) => {
-            if (task.task_id == request.body.task_id){
-                countsifthere = countsifthere + 1;
+    if(req.session.email){
+        function doWeHaveTask(){
+            countsifthere = 0;
+            tasks.forEach((task) => {
+                if (task.task_id == request.body.task_id){
+                    countsifthere = countsifthere + 1;
+                }
+            })
+        
+            if(countsifthere != 0){
+                return false;
+            }else{
+                return true;
             }
-        })
-    
-        if(countsifthere != 0){
-            return false;
-        }else{
-            return true;
         }
-    }
-
-    if(doWeHaveTask()){
-        res.status(404).send("Task with given id does not exist please try again with another id!")
-    }else{
-        res.status(200).send(tasks.find((task) => task.task_id === req.params.task_id))
+    
+        if(doWeHaveTask()){
+            res.status(404).send("Task with given id does not exist please try again with another id!")
+        }else{
+            res.status(200).send(tasks.find((task) => task.task_id === req.params.task_id))
+        }
     }
     
 })

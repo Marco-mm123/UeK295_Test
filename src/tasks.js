@@ -18,22 +18,25 @@ router.get('/task/:task_id', (req, res) => {
     //#swagger.tags = ['Tasks']
     function doWeHaveTask(){
         countsifthere = 0;
-        books.forEach((book) => {
-            if (book.isbn == request.body.isbn){
+        tasks.forEach((task) => {
+            if (task.task_id == request.body.task_id){
                 countsifthere = countsifthere + 1;
             }
         })
-
+    
         if(countsifthere != 0){
             return false;
         }else{
             return true;
         }
     }
+
     if(doWeHaveTask()){
         res.status(404).send("Task with given id does not exist please try again with another id!")
+    }else{
+        res.status(200).send(tasks.find((task) => task.task_id === req.params.task_id))
     }
-    res.status(200).send(tasks.find((task) => task.task_id === req.params.task_id))
+    
 })
 
 router.post('/tasks', (req, res) => {
@@ -44,16 +47,20 @@ router.post('/tasks', (req, res) => {
     newTask['done_at'] = ''
     newTask['task_id'] = randomUUID();
 
+    if(newTask.name){
+        tasks = [...tasks, newTask];
+        res.status(201).send(tasks);
+    }else{
+        res.status(400).send("Please enter the name of the task!")
+    }
 
-    tasks = [...tasks, newTask];
-    res.status(201).send(tasks);
     
 });
 
 router.patch('/task/:task_id', (req, res) => {
     //#swagger.tags = ['Lends']
     const keys = Object.keys(req.body);
-    const oldTasks = tasks.find(task => task.task_id === parseInt(req.params.task_id));
+    const oldTasks = tasks.find(task => task.task_id === req.params.task_id);
     keys.forEach(key => oldTasks[key] = req.body[key]);
     tasks = tasks.map(task => task.task_id === parseInt(req.params.task_id) ? oldTasks : task);
     res.status(201).send(tasks);
@@ -62,8 +69,28 @@ router.patch('/task/:task_id', (req, res) => {
 
 router.delete('/task/:task_id', (req, res) => {
     //#swagger.tags = ['Lends']
-    tasks = tasks.filter(task => task.task_id !== req.params.task_id)
-    res.status(200).send(tasks)
+    function doWeHaveTask(){
+        countsifthere = 0;
+        tasks.forEach((task) => {
+            if (task.task_id == req.params.task_id){
+                countsifthere = countsifthere + 1;
+            }
+        })
+    
+        if(countsifthere != 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    if(doWeHaveTask()){
+        res.status(404).send("There is no task with the given id, please try again with another task_id")
+    }else{
+        tasks = tasks.filter(task => task.task_id !== req.params.task_id)
+        res.status(200).send(tasks)
+    }
+    
 })
 
 module.exports = router

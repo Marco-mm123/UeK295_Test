@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const autrouter = require('./aut');
 const app = express();
 const port = 3000;
 
@@ -17,7 +18,8 @@ app.use(session({
 
 app.use(express.json());
 
-app.use(router)
+app.use(router);
+app.use(autrouter);
 
 /*app.get("/swagger-ui", (request, response) => {
   //#swagger.tags = ['swagger-ui']

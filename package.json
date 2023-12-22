@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "swagger": "node ./swagger.js",
-    "dev": "nodemon ./server.js"
+    "swagger": "node /workspaces/UeK295_Test/src/swagger.js",
+    "dev": "nodemon /workspaces/UeK295_Test/src/server.js"
   },
   "author": "",
   "license": "ISC",
